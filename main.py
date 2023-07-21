@@ -542,3 +542,56 @@ if layout1 and layout2:
     print("Rating of Website based on Jaccard Similarity:", similarity_rating)
 else:
     print("Layout extraction failed.")
+
+
+
+
+
+from bs4 import BeautifulSoup
+import requests
+
+def extract_layout(url):
+    try:
+        # Fetch the website's HTML content
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Extract layout by collecting unique HTML tags
+        layout = set(tag.name for tag in soup.find_all(True))
+
+        return layout
+
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the website:", e)
+        return None
+
+def calculate_jaccard_similarity(layout1, layout2):
+    # Calculate Jaccard similarity index
+    intersection = len(layout1.intersection(layout2))
+    union = len(layout1.union(layout2))
+    jaccard_similarity = intersection / union if union != 0 else 0
+
+    return jaccard_similarity
+
+# Replace with the URLs of the websites you want to compare
+website_url1 = "https://example1.com"
+website_url2 = "https://example2.com"
+
+# Extract layout from the websites
+layout1 = extract_layout(website_url1)
+layout2 = extract_layout(website_url2)
+
+if layout1 and layout2:
+    print("Layout of Website 1:", layout1)
+    print("Layout of Website 2:", layout2)
+
+    # Calculate similarity between the layouts
+    similarity_rating = calculate_jaccard_similarity(layout1, layout2)
+    print("Rating of Website based on Jaccard Similarity:", similarity_rating)
+else:
+    print("Layout extraction failed.")
+
