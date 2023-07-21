@@ -268,4 +268,21 @@ cv2.imshow("Object Detection", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+import cv2
+
+def compare_images_opencv(image_path1, image_path2):
+    # Read images
+    image1 = cv2.imread(image_path1)
+    image2 = cv2.imread(image_path2)
+
+    # Compute the structural similarity index (SSIM) between the two images
+    ssim_index, _ = cv2.compareSSIM(image1, image2, full=True)
+
+    # The SSIM index ranges from -1 to 1, with 1 being a perfect match
+    print(f"SSIM index: {ssim_index}")
+
+if __name__ == "__main__":
+    image_path1 = "path_to_image1.jpg"
+    image_path2 = "path_to_image2.jpg"
+    compare_images_opencv(image_path1, image_path2)
 
