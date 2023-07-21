@@ -286,3 +286,42 @@ if __name__ == "__main__":
     image_path2 = "path_to_image2.jpg"
     compare_images_opencv(image_path1, image_path2)
 
+
+
+
+import requests
+from bs4 import BeautifulSoup
+
+def extract_layout(url):
+    try:
+        # Fetch the webpage content using requests
+        response = requests.get(url)
+        if response.status_code == 200:
+            html_content = response.text
+        else:
+            print(f"Failed to fetch the webpage. Status code: {response.status_code}")
+            return None
+
+        # Parse the HTML content with BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Extract layout information (e.g., tags and their attributes)
+        layout_info = []
+        for tag in soup.find_all():
+            tag_name = tag.name
+            attributes = {attr: tag[attr] for attr in tag.attrs}
+            layout_info.append((tag_name, attributes))
+
+        return layout_info
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+if __name__ == "__main__":
+    url_to_extract = "https://www.bajajfinserv.in/"  # Replace with the URL of the website you want to extract the layout from
+    layout_data = extract_layout(url_to_extract)
+    if layout_data:
+        print(layout_data)
+
+
