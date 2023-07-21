@@ -132,3 +132,31 @@ alpha = 1.5  # Increase or decrease for different levels of contrast
 enhanced_image = cv2.convertScaleAbs(image, alpha=alpha, beta=0)
 beta = 50  # Increase or decrease for different levels of brightness
 enhanced_image = cv2.convertScaleAbs(image, alpha=1.0, beta=beta)
+
+
+import cv2
+
+def preprocess_image(image_path):
+    # Read the image from the file path
+    image = cv2.imread(image_path)
+
+    # Convert the image to grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply Gaussian blur to reduce noise (optional, depending on the task)
+    blurred_image = cv2.GaussianBlur(gray_image, (5, 5), 0)
+
+    # Apply thresholding to create a binary image (optional, depending on the task)
+    _, binary_image = cv2.threshold(blurred_image, 128, 255, cv2.THRESH_BINARY)
+
+    # Perform other preprocessing steps as needed, like resizing, cropping, etc.
+
+    return binary_image
+
+# Example usage
+image_path = 'path_to_your_image.jpg'
+preprocessed_image = preprocess_image(image_path)
+cv2.imshow('Preprocessed Image', preprocessed_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
