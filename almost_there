@@ -1,0 +1,190 @@
+import requests
+from bs4 import BeautifulSoup
+
+def extract_layout(url):
+    try:
+        # Fetch the webpage content using requests
+        response = requests.get(url)
+        if response.status_code == 200:
+            html_content = response.text
+        else:
+            print(f"Failed to fetch the webpage. Status code: {response.status_code}")
+            return None
+
+        # Parse the HTML content with BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Extract layout information (e.g., tags and their attributes)
+        layout_info = []
+        for tag in soup.find_all():
+            tag_name = tag.name
+            attributes = {attr: tag[attr] for attr in tag.attrs}
+            layout_info.append((tag_name, attributes))
+
+        return layout_info
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+if __name__ == "__main__":
+    url_to_extract = "https://www.bajajfinserv.in/"  # Replace with the URL of the website you want to extract the layout from
+    layout_data = extract_layout(url_to_extract)
+    if layout_data:
+        print(layout_data)
+
+#
+# 
+# web site layout comparision
+
+import requests
+from bs4 import BeautifulSoup
+
+def extract_layout(url):
+    try:
+        # Fetch the website's HTML content
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Initialize layout dictionary to store tag counts
+        layout = {}
+
+        # Extract layout by counting tags
+        for element in soup.find_all(True):
+            tag = element.name
+            layout[tag] = layout.get(tag, 0) + 1
+
+        return layout
+
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the website:", e)
+        return None
+
+if __name__ == "__main__":
+    website_url1 = "https://www.bajajfinserv.in/"  # Replace with the URL of the first website
+    website_url2 = "https://www.bajajfinserv.in/"  # Replace with the URL of the second website
+
+    layout1 = extract_layout(website_url1)
+    layout2 = extract_layout(website_url2)
+
+    if layout1 and layout2:
+        print("Layout of Website 1:")
+        for tag, count in layout1.items():
+            print(f"{tag}: {count}")
+
+        print("\nLayout of Website 2:")
+        for tag, count in layout2.items():
+            print(f"{tag}: {count}")
+
+        # Compare layout of both websites
+        if layout1 == layout2:
+            print("\nThe layouts are identical.")
+        else:
+            print("\nThe layouts are different.")
+    else:
+        print("Layout extraction failed.")
+
+#
+#
+# figma layout comparision
+import requests
+from bs4 import BeautifulSoup
+
+def get_figma_title(figma_url):
+    # Extracts the title from the Figma design link
+    # You may need to replace this function with Figma API calls if you want to extract other data.
+    # For simplicity, we'll just retrieve the page and use BeautifulSoup to find the title tag.
+    response = requests.get(figma_url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title_tag = soup.find('title')
+        if title_tag:
+            return title_tag.text.strip()
+    return None
+
+def get_website_title(website_url):
+    # Extracts the title from the other website link
+    response = requests.get(website_url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title_tag = soup.find('title')
+        if title_tag:
+            return title_tag.text.strip()
+    return None
+
+def main():
+    figma_url = "https://www.figma.com/file/1LbWxAvQ12spYAKQGvDUe4/Personal-Loan-PDP?type=design&node-id=1%3A4695&mode=design&t=MLzndGKsvU2LyF9P-1"
+    website_url = "https://www.bajajfinserv.in/"  # Replace this with the website you want to compare
+
+    figma_title = get_figma_title(figma_url)
+    website_title = get_website_title(website_url)
+
+    if figma_title and website_title:
+        if figma_title == website_title:
+            print("The Figma design matches the website layout.")
+        else:
+            print("The Figma design does not match the website layout.")
+    else:
+        print("Failed to retrieve data from either the Figma design or the website.")
+
+if __name__ == "__main__":
+    main()
+
+
+
+#####
+#rating
+#
+
+from bs4 import BeautifulSoup
+import requests
+
+def extract_layout(url):
+    try:
+        # Fetch the website's HTML content
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Extract layout by collecting unique HTML tags
+        layout = set(tag.name for tag in soup.find_all(True))
+
+        return layout
+
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the website:", e)
+        return None
+
+def calculate_jaccard_similarity(layout1, layout2):
+    # Calculate Jaccard similarity index
+    intersection = len(layout1.intersection(layout2))
+    union = len(layout1.union(layout2))
+    jaccard_similarity = intersection / union if union != 0 else 0
+
+    return jaccard_similarity
+
+# Replace with the URLs of the websites you want to compare
+website_url1 = "https://www.bajajfinserv.in/personal-loan"
+website_url2 = "https://www.bajajfinserv.in/doctor-loan"
+
+# Extract layout from the websites
+layout1 = extract_layout(website_url1)
+layout2 = extract_layout(website_url2)
+
+if layout1 and layout2:
+    print("Layout of Website 1:", layout1)
+    print("Layout of Website 2:", layout2)
+
+    # Calculate similarity between the layouts
+    similarity_rating = calculate_jaccard_similarity(layout1, layout2)
+    print("Rating of Website based on Jaccard Similarity:", similarity_rating*100 ,"%")
+else:
+    print("Layout extraction failed.")
+
