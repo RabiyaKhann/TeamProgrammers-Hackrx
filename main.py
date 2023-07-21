@@ -160,3 +160,42 @@ cv2.imshow('Preprocessed Image', preprocessed_image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+
+import cv2
+import numpy as np
+
+def feature_matching(image1_path, image2_path):
+    # Load the images
+    image1 = cv2.imread(image1_path, cv2.IMREAD_GRAYSCALE)
+    image2 = cv2.imread(image2_path, cv2.IMREAD_GRAYSCALE)
+
+    # Initialize the ORB detector and descriptor
+    orb = cv2.ORB_create()
+
+    # Find keypoints and descriptors in both images
+    keypoints1, descriptors1 = orb.detectAndCompute(image1, None)
+    keypoints2, descriptors2 = orb.detectAndCompute(image2, None)
+
+    # Create a Brute-Force Matcher
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+    # Match the descriptors
+    matches = bf.match(descriptors1, descriptors2)
+
+    # Sort the matches by distance (smaller distances mean better matches)
+    matches = sorted(matches, key=lambda x: x.distance)
+
+    # Draw the matches on a new image
+    matched_image = cv2.drawMatches(image1, keypoints1, image2, keypoints2, matches[:10], None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+
+    # Show the matched image
+    cv2.imshow("Feature Matching", matched_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    image1_path = "path/to/your/image1.jpg"
+    image2_path = "path/to/your/image2.jpg"
+
+    feature_matching(image1_path, image2_path)
+
