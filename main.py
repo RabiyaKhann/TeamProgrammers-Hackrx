@@ -325,3 +325,53 @@ if __name__ == "__main__":
         print(layout_data)
 
 
+import requests
+from bs4 import BeautifulSoup
+
+def extract_layout(url):
+    try:
+        # Fetch the website's HTML content
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Initialize layout dictionary to store tag counts
+        layout = {}
+
+        # Extract layout by counting tags
+        for element in soup.find_all(True):
+            tag = element.name
+            layout[tag] = layout.get(tag, 0) + 1
+
+        return layout
+
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the website:", e)
+        return None
+
+if __name__ == "__main__":
+    website_url1 = "https://example.com"  # Replace with the URL of the first website
+    website_url2 = "https://example2.com"  # Replace with the URL of the second website
+
+    layout1 = extract_layout(website_url1)
+    layout2 = extract_layout(website_url2)
+
+    if layout1 and layout2:
+        print("Layout of Website 1:")
+        for tag, count in layout1.items():
+            print(f"{tag}: {count}")
+
+        print("\nLayout of Website 2:")
+        for tag, count in layout2.items():
+            print(f"{tag}: {count}")
+
+        # Compare layout of both websites
+        if layout1 == layout2:
+            print("\nThe layouts are identical.")
+        else:
+            print("\nThe layouts are different.")
+    else:
+        print("Layout extraction failed.")
