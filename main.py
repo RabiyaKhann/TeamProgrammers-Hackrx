@@ -375,3 +375,59 @@ if __name__ == "__main__":
             print("\nThe layouts are different.")
     else:
         print("Layout extraction failed.")
+
+
+
+
+import requests
+from bs4 import BeautifulSoup
+
+# Function to fetch design specifications from Figma API
+def get_figma_design(api_key, design_link):
+    headers = {"X-Figma-Token": api_key}
+    response = requests.get(design_link, headers=headers)
+    figma_data = response.json()
+    # Extract design specifications from figma_data
+    # ... Implement your extraction logic here ...
+
+# Function to extract layout from a website
+def extract_layout(url):
+    try:
+        # Fetch the website's HTML content
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        # Parse the HTML using BeautifulSoup
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Initialize layout dictionary to store tag counts
+        layout = {}
+
+        # Extract layout by counting tags
+        for element in soup.find_all(True):
+            tag = element.name
+            layout[tag] = layout.get(tag, 0) + 1
+
+        return layout
+
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the website:", e)
+        return None
+
+if __name__ == "__main__":
+    # Replace with your Figma API key and design link
+    figma_api_key = "YOUR_FIGMA_API_KEY"
+    figma_design_link = "YOUR_FIGMA_DESIGN_LINK"
+
+    website_url = "https://example.com"  # Replace with the URL of the website you want to compare
+
+    # Get design specifications from Figma
+    figma_specifications = get_figma_design(figma_api_key, figma_design_link)
+
+    # Extract layout from the website
+    website_layout = extract_layout(website_url)
+
+    # Compare design specifications and website layout
+    # ... Implement your comparison logic here ...
+
