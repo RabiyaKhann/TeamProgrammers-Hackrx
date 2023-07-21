@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import cv2
 
-
 def capture_screenshot(url, output_path):
     # Set up Chrome options for headless browsing
     chrome_options = Options()
